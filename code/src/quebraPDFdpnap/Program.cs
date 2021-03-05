@@ -25,6 +25,12 @@ namespace quebraPDFdpnap
         public static clsDPNAPTP DPNAP { get; set; }
         static void Main(string[] args)
             {
+            Run();
+            }
+
+        private static void Run()
+            {
+
             DPNAP = new clsDPNAPTP("Use apenas no DPNAP (v0.1)...");
             arqECM = RetornarEntrada("ENTRADA");
             arqPDF = RetornarEntrada("ENTRADAPDF");
@@ -33,12 +39,10 @@ namespace quebraPDFdpnap
 
             DPNAP.GravarnoLog(arqECM);
             DPNAP.GravarnoLog(arqPDF);
-            
+
             try
                 {
-
                 DataTable ecmData = GetDataTableFromCSVFile(arqECM);
-
                 // Console.WriteLine("Rows count: " + ecmData.Rows.Count);
                 //*
                 DPNAP.GravarnoLog("Quebrando PDF");
@@ -66,24 +70,16 @@ namespace quebraPDFdpnap
                 TXTgat = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM) + ".TXT");
 
                 dirOUT = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM));
-                
 
-               if (!Directory.Exists(dirOUT))
-                   Directory.CreateDirectory(dirOUT);
 
-                // var contador = 0;
+                if (!Directory.Exists(dirOUT))
+                    Directory.CreateDirectory(dirOUT);
+
                 foreach (DataRow element in ecmData.Rows)
                     {
                     var arqECMsai = Path.Combine(dirOUT, Path.GetFileName(element.Field<string>("arqECM")) + ".pdf"); // nome do pdf a ser gravado
                     var pagInicial = int.Parse(element.Field<string>("pagInicial"));
-                    var pagFatura  = int.Parse(element.Field<string>("pagFatura"));
-                    //var Cliente = element.Field<string>("Cliente");
-                    //var Documento = element.Field<string>("Documento");
-                    //var email = element.Field<string>("email");
-                    //var arqEMAIL = element.Field<string>("arqEMAIL");
-                    //var senhaEMAIL = element.Field<string>("senhaEMAIL");
-                    //string arqPDFsai = Path.Combine(dirOUT, Path.GetFileName(arqPDF));
-                    //string arqPDFsenha = "";
+                    var pagFatura = int.Parse(element.Field<string>("pagFatura"));
 
                     PdfDocument pdfOUT = new PdfDocument(new PdfWriter(arqECMsai));
                     pdfOUT.InitializeOutlines();
@@ -102,8 +98,8 @@ namespace quebraPDFdpnap
                 pdfSRC.Close();
                 DPNAP.codSaida = 0;
                 DPNAP.GravarnoLog("Movendo:");
-                DPNAP.GravarnoLog("DE:   "+TXTbkp);
-                DPNAP.GravarnoLog("PARA: "+TXTgat);
+                DPNAP.GravarnoLog("DE:   " + TXTbkp);
+                DPNAP.GravarnoLog("PARA: " + TXTgat);
 
                 if (File.Exists(TXTbkp))
                     {
@@ -113,7 +109,7 @@ namespace quebraPDFdpnap
                     {
                     DPNAP.GravarnoLog("Não encontrei: " + TXTbkp);
                     }
-                
+
 
                 DPNAP.GravarnoLog("Terminado com sucesso!!!");
                 Environment.Exit(0);
@@ -124,7 +120,6 @@ namespace quebraPDFdpnap
                 Environment.Exit(3);
                 }
             }
-        
 
         private static DataTable GetDataTableFromCSVFile(string csv_file_path)
             {
@@ -171,4 +166,5 @@ namespace quebraPDFdpnap
             return entrada;
             }
         }
+
     }
