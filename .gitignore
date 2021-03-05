@@ -328,3 +328,6 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/code/src/packages
+/code/src/quebraPDFdpnap/bin
+/code/src/quebraPDFdpnap/obj
