@@ -1,0 +1,22 @@
+06/08/2020 23:45:45 - Quebrando PDF
+06/08/2020 23:45:46 - Arquivo ECM.......: C:\Users\leandro.mendonca\Downloads\SPOOL\ATZE.O077L094.20200806120700_$OCAL_#204152#_LOTE_001.ECM
+06/08/2020 23:45:46 - Arquivo PDF.......: C:\Users\leandro.mendonca\Downloads\SPOOL\ATZE.O077L094.20200806120700_$OCAL_#204152#_LOTE_001.PDF
+06/08/2020 23:45:47 - Diretório de saída: C:\Users\leandro.mendonca\Downloads\SPOOL\Saída\
+06/08/2020 23:45:47 - Diretório de log..: 
+06/08/2020 23:45:48 - Diretório de BKP..: 
+06/08/2020 23:49:35 - Quebrando PDF
+06/08/2020 23:49:35 - Arquivo ECM.......: C:\Users\leandro.mendonca\Downloads\SPOOL\ATZE.O077L094.20200806120700_$OCAL_#204152#_LOTE_001.ECM
+06/08/2020 23:49:35 - Arquivo PDF.......: C:\Users\leandro.mendonca\Downloads\SPOOL\ATZE.O077L094.20200806120700_$OCAL_#204152#_LOTE_001.PDF
+06/08/2020 23:49:35 - Diretório de saída: C:\Users\leandro.mendonca\Downloads\SPOOL\Saída\
+06/08/2020 23:49:35 - Diretório de BKP..: 
+06/08/2020 23:51:17 - Quebrando PDF
+06/08/2020 23:51:17 - Arquivo ECM.......: C:\Users\leandro.mendonca\Downloads\SPOOL\ATZE.O077L094.20200806120700_$OCAL_#204152#_LOTE_001.ECM
+06/08/2020 23:51:17 - Arquivo PDF.......: C:\Users\leandro.mendonca\Downloads\SPOOL\ATZE.O077L094.20200806120700_$OCAL_#204152#_LOTE_001.PDF
+06/08/2020 23:51:17 - Diretório de saída: C:\Users\leandro.mendonca\Downloads\SPOOL\Saída\
+06/08/2020 23:51:17 - Diretório de BKP..: 
+06/08/2020 23:53:30 - Quebrando PDF
+06/08/2020 23:53:30 - Arquivo ECM.......: C:\Users\leandro.mendonca\Downloads\SPOOL\ATZE.O077L094.20200806120700_$OCAL_#204152#_LOTE_001.ECM
+06/08/2020 23:53:30 - Arquivo PDF.......: C:\Users\leandro.mendonca\Downloads\SPOOL\ATZE.O077L094.20200806120700_$OCAL_#204152#_LOTE_001.PDF
+06/08/2020 23:53:30 - Diretório de saída: C:\Users\leandro.mendonca\Downloads\SPOOL\Saída\
+06/08/2020 23:53:30 - Diretório de BKP..: 
+06/08/2020 23:54:56 - Terminado com sucesso, acho...
