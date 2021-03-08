@@ -37,8 +37,8 @@ namespace quebraPDFdpnap
             dirOUT = DPNAP.PastaSaida;
             dirBKP = DPNAP.PastaRecuros; // para onde vamos mover o PDF
 
-            DPNAP.GravarnoLog(arqECM);
-            DPNAP.GravarnoLog(arqPDF);
+            //DPNAP.GravarnoLog(arqECM);
+            //DPNAP.GravarnoLog(arqPDF);
 
             try
                 {
@@ -46,10 +46,9 @@ namespace quebraPDFdpnap
                 // Console.WriteLine("Rows count: " + ecmData.Rows.Count);
                 //*
                 DPNAP.GravarnoLog("Quebrando PDF");
-                DPNAP.GravarnoLog("Arquivo ECM.......: " + arqECM);
-                DPNAP.GravarnoLog("Arquivo PDF.......: " + arqPDF);
-                DPNAP.GravarnoLog("Diretório de saída: " + dirOUT);
-                DPNAP.GravarnoLog("Diretório de BKP..: " + dirBKP);
+                DPNAP.GravarnoLog("Arquivo ECM...: " + arqECM);
+                DPNAP.GravarnoLog("Arquivo PDF...: " + arqPDF);
+                DPNAP.GravarnoLog("Pasta de saída: " + dirOUT);
                 //*/
                 // abre o pdfIn
 
@@ -77,9 +76,12 @@ namespace quebraPDFdpnap
 
                 foreach (DataRow element in ecmData.Rows)
                     {
-                    var arqECMsai = Path.Combine(dirOUT, Path.GetFileName(element.Field<string>("arqECM")) + ".pdf"); // nome do pdf a ser gravado
+                    var arqECMsai = Path.Combine(dirOUT, Path.GetFileName(element.Field<string>("arqECM")) + "_noPass.pdf"); // nome do pdf a ser gravado
+                    var arqECMfim = Path.Combine(dirOUT, Path.GetFileName(element.Field<string>("arqECM")) + ".pdf"); // nome do pdf a ser gravado
                     var pagInicial = int.Parse(element.Field<string>("pagInicial"));
                     var pagFatura = int.Parse(element.Field<string>("pagFatura"));
+                    var pdfSenhaS = element.Field<string>("pdfSenha");
+                    //var pdfSenha = System.Text.Encoding.UTF8.GetBytes(element.Field<string>("pdfSenha"));
 
                     PdfDocument pdfOUT = new PdfDocument(new PdfWriter(arqECMsai));
                     pdfOUT.InitializeOutlines();
@@ -92,8 +94,36 @@ namespace quebraPDFdpnap
                         pages.Add(pagInicial + i);
                         }
                     _ = pdfSRC.CopyPagesTo(pages, pdfOUT);
+
+                    pdfOUT.SetCloseWriter(true);
                     pdfOUT.Close();
 
+                    if (pdfSenhaS.Length > 0 && pdfSenhaS != "NOPASSWORD" )
+                        {
+                        //DPNAP.GravarnoLog($"Tem senha:");
+                        //DPNAP.GravarnoLog($"  Lendo _noPass: {arqECMsai}");
+                        //DPNAP.GravarnoLog($"  Criando senha: {arqECMfim}");
+                        PdfReader reader = new PdfReader(arqECMsai);
+                        WriterProperties props = new WriterProperties().SetStandardEncryption(
+                            System.Text.Encoding.UTF8.GetBytes(pdfSenhaS), 
+                            System.Text.Encoding.UTF8.GetBytes(pdfSenhaS), 
+                            EncryptionConstants.ALLOW_PRINTING,
+                            encryptionAlgorithm: EncryptionConstants.ENCRYPTION_AES_256 | EncryptionConstants.DO_NOT_ENCRYPT_METADATA);
+                        PdfWriter writer = new PdfWriter(new PdfWriter(arqECMfim), props);
+                        var pdfDoc = new PdfDocument(reader, writer);
+                        pdfDoc.Close();
+                        reader.Close();
+                        writer.Close();
+                        File.Delete(arqECMsai);
+                        }
+                    else
+                        {
+                        //DPNAP.GravarnoLog($"Sem senha:");
+                        //DPNAP.GravarnoLog($"  Lendo _noPass: {arqECMsai}");
+                        //DPNAP.GravarnoLog($"  Criando senha: {arqECMfim}");
+                        File.Move(arqECMsai, arqECMfim);
+                        }
+                    
                     }
                 pdfSRC.Close();
                 DPNAP.codSaida = 0;

@@ -1,20 +1,13 @@
 # Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+Versão para incluir a funcionalidade de gerar PDF individual com senha
+Para isso houve mudança no formato do arquivo de índice, adicionando uma coluna nova e ficando desta forma
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+arqECM;pagInicial;pagFatura;pdfSenha
+00000669760830492021030520210222;1;3;SENHA_DESEJADA_PARA_ESTE_ARQUIVO
+00000669880015912021030520210226;4;3;NOPASSWORD
+00000669840667622021031020210224;7;3;NOPASSWORD
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+Se a palavra NOPASSWORD estiver presente no campo de senha o PDF individual será gerado sem senha, caso contenha qualquer outra coisa o conteúdo será a senha aplicada.
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+
