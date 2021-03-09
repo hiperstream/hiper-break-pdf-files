@@ -14,51 +14,57 @@ namespace quebraPDFdpnap
     {
     public class Program
         {
-        static string arqECM = string.Empty;
-        static string dirOUT = string.Empty;
-        static string dirBKP = string.Empty;
-        static string TXTbkp = string.Empty;
-        static string TXTgat = string.Empty;
-
-        //static string dirLOG = string.Empty;
-        static string arqPDF = string.Empty;
         public static clsDPNAPTP DPNAP { get; set; }
-        static void Main(string[] args)
+        //static void Main(string[] args)
+        static void Main()
             {
             Run();
             }
 
         private static void Run()
             {
+            string TXTbkp;
+            string TXTgat;
+            bool SENHA = false;
 
             DPNAP = new clsDPNAPTP("Use apenas no DPNAP (v0.1)...");
-            arqECM = RetornarEntrada("ENTRADA");
-            arqPDF = RetornarEntrada("ENTRADAPDF");
-            dirOUT = DPNAP.PastaSaida;
-            dirBKP = DPNAP.PastaRecuros; // para onde vamos mover o PDF
-
-            //DPNAP.GravarnoLog(arqECM);
-            //DPNAP.GravarnoLog(arqPDF);
+            string arqECM = RetornarEntrada("ENTRADA");
+            string arqPDF = RetornarEntrada("ENTRADAPDF");
+            string dirOUT = DPNAP.PastaSaida;
+            //string dirBKP = DPNAP.PastaRecuros; // para onde vamos mover o PDF
+            if (DPNAP.Job == "SENHA")
+                {
+                SENHA = true;
+                }
+            if (Path.GetFileNameWithoutExtension(arqECM).Contains("$OCAL"))
+                {
+                SENHA = false;
+                }
 
             try
                 {
                 DataTable ecmData = GetDataTableFromCSVFile(arqECM);
-                // Console.WriteLine("Rows count: " + ecmData.Rows.Count);
-                //*
                 DPNAP.GravarnoLog("Quebrando PDF");
                 DPNAP.GravarnoLog("Arquivo ECM...: " + arqECM);
                 DPNAP.GravarnoLog("Arquivo PDF...: " + arqPDF);
                 DPNAP.GravarnoLog("Pasta de saída: " + dirOUT);
-                //*/
-                // abre o pdfIn
-
+                if (SENHA)
+                    {
+                    DPNAP.GravarnoLog(">>> Aplicando senha nos PDF individuais");
+                    }
+                else
+                    {
+                    DPNAP.GravarnoLog(">>> Arquivos PDF individuais sem senha");
+                    }
+                    
                 if (File.Exists(arqPDF))
                     {
                     DPNAP.GravarnoLog("\n\nAbrindo " + arqPDF + "\n");
                     }
                 else
                     {
-                    DPNAP.GravarnoLog("\n\nProblemas abrindo " + arqPDF + "\n");
+                    DPNAP.GravarnoLog("\n\nNão encontrei " + arqPDF + "\n");
+                    throw new FileNotFoundException("This file was not found.");
                     }
 
                 PdfDocument pdfSRC = new PdfDocument(new PdfReader(arqPDF));
@@ -80,13 +86,15 @@ namespace quebraPDFdpnap
                     var arqECMfim = Path.Combine(dirOUT, Path.GetFileName(element.Field<string>("arqECM")) + ".pdf"); // nome do pdf a ser gravado
                     var pagInicial = int.Parse(element.Field<string>("pagInicial"));
                     var pagFatura = int.Parse(element.Field<string>("pagFatura"));
-                    var pdfSenhaS = element.Field<string>("pdfSenha");
-                    //var pdfSenha = System.Text.Encoding.UTF8.GetBytes(element.Field<string>("pdfSenha"));
+                    string pdfSenhaS = null;
+                    if (SENHA) // só busca a coluna de senha se for necessário
+                        {
+                        pdfSenhaS = element.Field<string>("pdfSenha");
+                        }
 
                     PdfDocument pdfOUT = new PdfDocument(new PdfWriter(arqECMsai));
                     pdfOUT.InitializeOutlines();
 
-                    //PdfDocument pdfPASS
                     IList<int> pages = new List<int>();
 
                     for (int i = 0; i < pagFatura; i++)
@@ -98,32 +106,14 @@ namespace quebraPDFdpnap
                     pdfOUT.SetCloseWriter(true);
                     pdfOUT.Close();
 
-                    if (pdfSenhaS.Length > 0 && pdfSenhaS != "NOPASSWORD" )
+                    if (SENHA)
                         {
-                        //DPNAP.GravarnoLog($"Tem senha:");
-                        //DPNAP.GravarnoLog($"  Lendo _noPass: {arqECMsai}");
-                        //DPNAP.GravarnoLog($"  Criando senha: {arqECMfim}");
-                        PdfReader reader = new PdfReader(arqECMsai);
-                        WriterProperties props = new WriterProperties().SetStandardEncryption(
-                            System.Text.Encoding.UTF8.GetBytes(pdfSenhaS), 
-                            System.Text.Encoding.UTF8.GetBytes(pdfSenhaS), 
-                            EncryptionConstants.ALLOW_PRINTING,
-                            encryptionAlgorithm: EncryptionConstants.ENCRYPTION_AES_256 | EncryptionConstants.DO_NOT_ENCRYPT_METADATA);
-                        PdfWriter writer = new PdfWriter(new PdfWriter(arqECMfim), props);
-                        var pdfDoc = new PdfDocument(reader, writer);
-                        pdfDoc.Close();
-                        reader.Close();
-                        writer.Close();
-                        File.Delete(arqECMsai);
+                        PdfComSenha(arqECMsai, arqECMfim, pdfSenhaS);
                         }
                     else
                         {
-                        //DPNAP.GravarnoLog($"Sem senha:");
-                        //DPNAP.GravarnoLog($"  Lendo _noPass: {arqECMsai}");
-                        //DPNAP.GravarnoLog($"  Criando senha: {arqECMfim}");
                         File.Move(arqECMsai, arqECMfim);
                         }
-                    
                     }
                 pdfSRC.Close();
                 DPNAP.codSaida = 0;
@@ -139,7 +129,6 @@ namespace quebraPDFdpnap
                     {
                     DPNAP.GravarnoLog("Não encontrei: " + TXTbkp);
                     }
-
 
                 DPNAP.GravarnoLog("Terminado com sucesso!!!");
                 Environment.Exit(0);
@@ -164,9 +153,11 @@ namespace quebraPDFdpnap
                 string[] colFields = csvReader.ReadFields();
                 foreach (string column in colFields)
                     {
-                    DataColumn datecolumn = new DataColumn(column);
-                    datecolumn.AllowDBNull = true;
-                    csvData.Columns.Add(datecolumn);
+                    DataColumn datacolumn = new DataColumn(column)
+                        {
+                        AllowDBNull = true
+                        };
+                    csvData.Columns.Add(column: datacolumn);
                     }
                 while (!csvReader.EndOfData)
                     {
@@ -195,6 +186,21 @@ namespace quebraPDFdpnap
             if (entrada == null) DPNAP.GravarnoLog("Nome da entrada do dpnap não encontrado");
             return entrada;
             }
-        }
 
+        public static void PdfComSenha(string arqECMsai, string arqECMfim, string pdfSenhaS)
+            {
+            PdfReader reader = new PdfReader(arqECMsai);
+            WriterProperties props = new WriterProperties().SetStandardEncryption(
+                System.Text.Encoding.UTF8.GetBytes(pdfSenhaS),
+                System.Text.Encoding.UTF8.GetBytes(pdfSenhaS),
+                EncryptionConstants.ALLOW_PRINTING,
+                encryptionAlgorithm: EncryptionConstants.ENCRYPTION_AES_256 | EncryptionConstants.DO_NOT_ENCRYPT_METADATA);
+            PdfWriter writer = new PdfWriter(new PdfWriter(arqECMfim), props);
+            var pdfDoc = new PdfDocument(reader, writer);
+            pdfDoc.Close();
+            writer.Close();
+            reader.Close();
+            File.Delete(arqECMsai);
+            }
+        }
     }
