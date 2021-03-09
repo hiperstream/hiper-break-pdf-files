@@ -25,21 +25,14 @@ namespace quebraPDFdpnap
             {
             string TXTbkp;
             string TXTgat;
-            bool SENHA = false;
+            bool SENHA;
 
             DPNAP = new clsDPNAPTP("Use apenas no DPNAP (v0.1)...");
             string arqECM = RetornarEntrada("ENTRADA");
             string arqPDF = RetornarEntrada("ENTRADAPDF");
             string dirOUT = DPNAP.PastaSaida;
-            //string dirBKP = DPNAP.PastaRecuros; // para onde vamos mover o PDF
-            if (DPNAP.Job == "SENHA")
-                {
-                SENHA = true;
-                }
-            if (Path.GetFileNameWithoutExtension(arqECM).Contains("$OCAL"))
-                {
-                SENHA = false;
-                }
+            // só vai colocar senha se exitir SENHA no Job e o nome do arquivo não contem $OCAL (não é aleatório)
+            SENHA = (DPNAP.Job=="SENHA" && !(Path.GetFileNameWithoutExtension(arqECM).Contains("$OCAL")));
 
             try
                 {
