@@ -15,7 +15,6 @@ namespace quebraPDFdpnap
     public class Program
         {
         public static clsDPNAPTP DPNAP { get; set; }
-        //static void Main(string[] args)
         static void Main()
             {
             Run();
@@ -23,16 +22,14 @@ namespace quebraPDFdpnap
 
         private static void Run()
             {
-            string TXTbkp;
-            string TXTgat;
             bool SENHA;
 
             DPNAP = new clsDPNAPTP("Use apenas no DPNAP (v0.1)...");
             string arqECM = RetornarEntrada("ENTRADA");
             string arqPDF = RetornarEntrada("ENTRADAPDF");
             string dirOUT = DPNAP.PastaSaida;
-            // só vai colocar senha se exitir SENHA no Job e o nome do arquivo não contem $OCAL (não é aleatório)
-            SENHA = (DPNAP.Job=="SENHA" && !(Path.GetFileNameWithoutExtension(arqECM).Contains("$OCAL")));
+            string[] splitJob = DPNAP.Job.Split(':');
+            SENHA = (splitJob[0] == "SENHA" && !(Path.GetFileNameWithoutExtension(arqECM).Contains("$OCAL")));
 
             try
                 {
@@ -63,26 +60,22 @@ namespace quebraPDFdpnap
                 PdfDocument pdfSRC = new PdfDocument(new PdfReader(arqPDF));
 
                 DPNAP.GravarnoLog("O arquivo " + arqPDF + " possui " + pdfSRC.GetNumberOfPages() + " páginas.");
-
-                TXTbkp = Path.Combine(dirOUT, "BKP", Path.GetFileNameWithoutExtension(arqECM) + ".TXT");
-                TXTgat = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM) + ".TXT");
-
+                
                 dirOUT = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM));
-
-
+                
                 if (!Directory.Exists(dirOUT))
                     Directory.CreateDirectory(dirOUT);
 
                 foreach (DataRow element in ecmData.Rows)
                     {
-                    var arqECMsai = Path.Combine(dirOUT, Path.GetFileName(element.Field<string>("arqECM")) + "_noPass.pdf"); // nome do pdf a ser gravado
-                    var arqECMfim = Path.Combine(dirOUT, Path.GetFileName(element.Field<string>("arqECM")) + ".pdf"); // nome do pdf a ser gravado
+                    var arqECMsai = Path.Combine(dirOUT, Path.GetFileName(element.Field<string>("arqECM")) + "_noPass.pdf"); 
+                    var arqECMfim = Path.Combine(dirOUT, Path.GetFileName(element.Field<string>("arqECM")) + ".pdf");
                     var pagInicial = int.Parse(element.Field<string>("pagInicial"));
                     var pagFatura = int.Parse(element.Field<string>("pagFatura"));
                     string pdfSenhaS = null;
-                    if (SENHA) // só busca a coluna de senha se for necessário
+                    if (SENHA) 
                         {
-                        pdfSenhaS = element.Field<string>("pdfSenha");
+                        pdfSenhaS = element.Field<string>(splitJob[1]);
                         }
 
                     PdfDocument pdfOUT = new PdfDocument(new PdfWriter(arqECMsai));
@@ -110,18 +103,7 @@ namespace quebraPDFdpnap
                     }
                 pdfSRC.Close();
                 DPNAP.codSaida = 0;
-                DPNAP.GravarnoLog("Movendo:");
-                DPNAP.GravarnoLog("DE:   " + TXTbkp);
-                DPNAP.GravarnoLog("PARA: " + TXTgat);
-
-                if (File.Exists(TXTbkp))
-                    {
-                    File.Move(TXTbkp, TXTgat);
-                    }
-                else
-                    {
-                    DPNAP.GravarnoLog("Não encontrei: " + TXTbkp);
-                    }
+               
 
                 DPNAP.GravarnoLog("Terminado com sucesso!!!");
                 Environment.Exit(0);
