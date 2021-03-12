@@ -22,6 +22,8 @@ namespace quebraPDFdpnap
 
         private static void Run()
             {
+            string TXTbkp;
+            string TXTgat;
             bool SENHA;
 
             DPNAP = new clsDPNAPTP("Use apenas no DPNAP (v0.1)...");
@@ -60,7 +62,11 @@ namespace quebraPDFdpnap
                 PdfDocument pdfSRC = new PdfDocument(new PdfReader(arqPDF));
 
                 DPNAP.GravarnoLog("O arquivo " + arqPDF + " possui " + pdfSRC.GetNumberOfPages() + " páginas.");
-                
+
+                TXTbkp = Path.Combine(dirOUT, "BKP", Path.GetFileNameWithoutExtension(arqECM) + ".TXT");
+                TXTgat = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM) + ".TXT");
+
+
                 dirOUT = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM));
                 
                 if (!Directory.Exists(dirOUT))
@@ -103,7 +109,20 @@ namespace quebraPDFdpnap
                     }
                 pdfSRC.Close();
                 DPNAP.codSaida = 0;
-               
+                DPNAP.GravarnoLog("Movendo:");
+                DPNAP.GravarnoLog("DE:   " + TXTbkp);
+                DPNAP.GravarnoLog("PARA: " + TXTgat);
+
+                if (File.Exists(TXTbkp))
+                {
+                    File.Move(TXTbkp, TXTgat);
+                }
+                else
+                {
+                    DPNAP.GravarnoLog("Não encontrei: " + TXTbkp);
+                }
+
+
 
                 DPNAP.GravarnoLog("Terminado com sucesso!!!");
                 Environment.Exit(0);
