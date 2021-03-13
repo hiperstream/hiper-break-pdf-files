@@ -25,22 +25,22 @@ namespace quebraPDFdpnap
             string TXTbkp;
             string TXTgat;
             bool SENHA;
-            string arqECM = string.Empty;
             string arqPDF = string.Empty;
 
             DPNAP = new clsDPNAPTP("Use apenas no DPNAP (v0.1)...");
-            arqECM = RetornarEntrada("ENTRADA");
-            if (DPNAP.Entradas.Count() > 1 && DPNAP.PastaRecuros == null)
+            var arqECM = RetornarEntrada("ENTRADA");
+
+            if (DPNAP.Entradas.Count() > 1 && DPNAP.PastaRecuros.Trim() == "")
             {
                 arqPDF = RetornarEntrada("ENTRADAPDF");
             }
-            else if (DPNAP.Entradas.Count() == 1 && DPNAP.PastaRecuros != null)
+            else if (DPNAP.Entradas.Count() == 1 && DPNAP.PastaRecuros.Trim() != "")
             {
                 arqPDF = DPNAP.PastaRecuros + Path.GetFileNameWithoutExtension(arqECM) + "." + DPNAP.Engine;
             }
             else
             {
-                DPNAP.GravarnoLog("Falaha ao Buscar o PDF!!");
+                DPNAP.GravarnoLog("Se existe mais de uma entrada o caminho de recursos deve estar vazio!!");
                 Environment.Exit(3);
             }
 
@@ -50,8 +50,6 @@ namespace quebraPDFdpnap
 
             try
                 {
-               
-
                 DataTable ecmData = GetDataTableFromCSVFile(arqECM);
                 DPNAP.GravarnoLog("Quebrando PDF");
                 DPNAP.GravarnoLog("Arquivo ECM...: " + arqECM);
