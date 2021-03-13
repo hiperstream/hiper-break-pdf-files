@@ -22,17 +22,36 @@ namespace quebraPDFdpnap
 
         private static void Run()
             {
+            string TXTbkp;
+            string TXTgat;
             bool SENHA;
+            string arqECM = string.Empty;
+            string arqPDF = string.Empty;
 
             DPNAP = new clsDPNAPTP("Use apenas no DPNAP (v0.1)...");
-            string arqECM = RetornarEntrada("ENTRADA");
-            string arqPDF = RetornarEntrada("ENTRADAPDF");
+            arqECM = RetornarEntrada("ENTRADA");
+            if (DPNAP.Entradas.Count() > 1 && DPNAP.PastaRecuros == null)
+            {
+                arqPDF = RetornarEntrada("ENTRADAPDF");
+            }
+            else if (DPNAP.Entradas.Count() == 1 && DPNAP.PastaRecuros != null)
+            {
+                arqPDF = DPNAP.PastaRecuros + Path.GetFileNameWithoutExtension(arqECM) + "." + DPNAP.Engine;
+            }
+            else
+            {
+                DPNAP.GravarnoLog("Falaha ao Buscar o PDF!!");
+                Environment.Exit(3);
+            }
+
             string dirOUT = DPNAP.PastaSaida;
             string[] splitJob = DPNAP.Job.Split(':');
             SENHA = (splitJob[0] == "SENHA" && !(Path.GetFileNameWithoutExtension(arqECM).Contains("$OCAL")));
 
             try
                 {
+               
+
                 DataTable ecmData = GetDataTableFromCSVFile(arqECM);
                 DPNAP.GravarnoLog("Quebrando PDF");
                 DPNAP.GravarnoLog("Arquivo ECM...: " + arqECM);
@@ -60,7 +79,11 @@ namespace quebraPDFdpnap
                 PdfDocument pdfSRC = new PdfDocument(new PdfReader(arqPDF));
 
                 DPNAP.GravarnoLog("O arquivo " + arqPDF + " possui " + pdfSRC.GetNumberOfPages() + " páginas.");
-                
+
+                TXTbkp = Path.Combine(dirOUT, "BKP", Path.GetFileNameWithoutExtension(arqECM) + ".TXT");
+                TXTgat = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM) + ".TXT");
+
+
                 dirOUT = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM));
                 
                 if (!Directory.Exists(dirOUT))
@@ -103,8 +126,31 @@ namespace quebraPDFdpnap
                     }
                 pdfSRC.Close();
                 DPNAP.codSaida = 0;
-               
+                DPNAP.GravarnoLog("Movendo:");
+                DPNAP.GravarnoLog("DE:   " + TXTbkp);
+                DPNAP.GravarnoLog("PARA: " + TXTgat);
 
+                if (File.Exists(TXTbkp))
+                {
+                    File.Move(TXTbkp, TXTgat);
+                }
+                else
+                {
+                    DPNAP.GravarnoLog("Não encontrei: " + TXTbkp);
+                }
+
+
+                if (DPNAP.PastaRecuros != null)
+                {
+                    string bkpPDF = Path.Combine(Path.GetDirectoryName(arqPDF), "BKP", Path.GetFileName(arqPDF));
+                    File.Move(arqPDF, bkpPDF);
+                }
+                else
+                {
+                    DPNAP.GravarnoLog("Não foi necessario mover o PDF!!: " + Path.GetFileName(arqPDF));
+                }
+
+                
                 DPNAP.GravarnoLog("Terminado com sucesso!!!");
                 Environment.Exit(0);
                 }
