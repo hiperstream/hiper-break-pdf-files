@@ -124,8 +124,8 @@ namespace quebraPDFdpnap
                 pdfSRC.Close();
                 DPNAP.codSaida = 0;
                 DPNAP.GravarnoLog("Movendo:");
-                DPNAP.GravarnoLog("DE:   " + TXTbkp);
-                DPNAP.GravarnoLog("PARA: " + TXTgat);
+                DPNAP.GravarnoLog("DE.....: " + TXTbkp);
+                DPNAP.GravarnoLog("PARA...: " + TXTgat);
 
                 if (File.Exists(TXTbkp))
                 {
@@ -143,7 +143,7 @@ namespace quebraPDFdpnap
                 }
                 else
                 {
-                    DPNAP.GravarnoLog("Não foi necessario mover o PDF!!: " + Path.GetFileName(arqPDF));
+                    DPNAP.GravarnoLog("Não foi necessario mover o PDF!: " + Path.GetFileName(arqPDF));
                 }
                 
                 DPNAP.GravarnoLog("Terminado com sucesso!!!");
@@ -199,7 +199,7 @@ namespace quebraPDFdpnap
             {
             string entrada = null;
             entrada = DPNAP.Entradas.ToList().Find(e => e.NomeEntrada.ToLower() == NomeEntrada.ToLower()).ArquivoEntrada.ToString();
-            if (entrada == null) DPNAP.GravarnoLog("Nome da entrada do dpnap não encontrado");
+            if (entrada == null) DPNAP.GravarnoLog("Nome da entrada do dpnap não encontrado!");
             return entrada;
             }
 
