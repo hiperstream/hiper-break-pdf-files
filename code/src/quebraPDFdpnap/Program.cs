@@ -81,7 +81,6 @@ namespace quebraPDFdpnap
                 TXTbkp = Path.Combine(dirOUT, "BKP", Path.GetFileNameWithoutExtension(arqECM) + ".TXT");
                 TXTgat = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM) + ".TXT");
 
-
                 dirOUT = Path.Combine(dirOUT, Path.GetFileNameWithoutExtension(arqECM));
                 
                 if (!Directory.Exists(dirOUT))
@@ -137,7 +136,6 @@ namespace quebraPDFdpnap
                     DPNAP.GravarnoLog("Não encontrei: " + TXTbkp);
                 }
 
-
                 if (DPNAP.PastaRecuros != null)
                 {
                     string bkpPDF = Path.Combine(Path.GetDirectoryName(arqPDF), "BKP", Path.GetFileName(arqPDF));
@@ -147,7 +145,6 @@ namespace quebraPDFdpnap
                 {
                     DPNAP.GravarnoLog("Não foi necessario mover o PDF!!: " + Path.GetFileName(arqPDF));
                 }
-
                 
                 DPNAP.GravarnoLog("Terminado com sucesso!!!");
                 Environment.Exit(0);
