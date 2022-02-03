@@ -1,6 +1,19 @@
-# Introduction 
+![:hiper logo](https://cdn.vikomet.eu/hiperstream/filestorage/7CDC6DADC45843E4898D3844241F3001.png)
+<br>
+[![Build Status](https://img.shields.io/badge/build-sucess-blue)](https://github.com/hiperstream/hiper-break-pdf-files)
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/hiperstream/hiper-break-pdf-files)
+
+# hiper-break-pdf-files
+
 Código que quebra um pdf já existente e proteje com senha o arquivo gerado.
 Para isso houve mudança no formato do arquivo de índice, adicionando uma coluna nova e ficando desta forma
+
+## Pré Requisitos
+* [dotnet 4.6](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net462)
+* [VSCode](https://code.visualstudio.com/download)
+* [iText](https://itextpdf.com/)
+
+## Exemplo
 
 ```
 arqECM;pagInicial;pagFatura;pdfSenha
